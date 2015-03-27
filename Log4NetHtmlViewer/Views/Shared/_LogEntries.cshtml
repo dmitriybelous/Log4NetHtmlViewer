@@ -1,0 +1,33 @@
+﻿@model List<Log4NetHtmlViewer.Models.LogEntry>
+@{
+    ViewBag.Title = "_LogEntries";
+}
+<script src="~/Scripts/jquery.dataTables.js"></script>
+
+<table id="DocsTable" class="table-hover table-bordered table-responsive logtable">
+    <thead>
+        <tr>
+            <th>Time</th>
+            <th>Level</th>
+            <th>Source</th>
+            <th>Message</th>
+        </tr>
+    </thead>
+    @foreach (var item in Model)
+    {
+        <tr>
+            <td width="150px">@item.TimeStamp</td>
+            <td>@item.Level</td>
+            <td>@item.Source</td>
+            <td>@item.Message</td>
+        </tr>
+    }
+</table>
+<script type="text/javascript">
+
+    $(document).ready(function () {
+        var oTableLocal = $('#DocsTable').DataTable();
+    });
+
+</script>
+ 

@@ -1,0 +1,60 @@
+﻿@model Log4NetHtmlViewer.Models.LogViewModel
+
+@{
+    ViewBag.Title = "Home Page";
+}
+
+<div class="jumbotron">
+    Servers:
+    <div class="btn-group" role="group" aria-label="Servers">
+        <button type="button" value="DEV" class="btn btn-default server">DEV</button>
+        <button type="button" value="QA" class="btn btn-default server">QA</button>
+        <button type="button" value="PROD" class="btn btn-default server">PROD</button>
+    </div>
+
+    Sites:<select id="sitelist"></select>
+</div>
+
+<div id="logDiv">
+    @Html.Partial("_LogEntries", Model.Entries)
+</div>
+
+<script type="text/javascript">
+    $(document).ready(function () {
+
+        $(document).on("click", ".server", function () {
+
+            var selserv = $(this).val();
+
+            $.ajax({
+                url: '@Url.Action("GetSites", "Home")',
+                data: { server: selserv },
+                type: 'GET',
+                success: function (data) {
+
+                    $(".jumbotron").find("#sitelist").empty();
+
+                    for (var i = 0; i < data.length; i += 1) {
+                        $(".jumbotron").find("#sitelist").append('<option role="presentation"><a role="menuitem" tabindex="-1" href="' + data[i] + '">' + data[i] + '</a></option>');
+                    }
+                },
+                error: function (errorThrown) {
+                }
+            });
+        });
+
+        $(".jumbotron").find("#sitelist").change(function () {
+            var logDiv = $("#logDiv");
+            var path = $(".jumbotron").find("#sitelist").val();
+
+            $.get('@Url.Action("GetLog", "Home")', { logPath: path })
+            .done(function (data) {
+                logDiv.html('');
+                logDiv.html(data);
+            });
+
+        });
+
+    });
+
+</script>
